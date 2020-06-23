@@ -1,19 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-# CP4D Quick Start Guide
-
-## Contents
-1. How is CP4D used in Maximo Application Suite
-2. Supported Versions
-3. Supported Deployment Details
-4. Pre-installation requirements
-5. Installing
-=======
 # CloudPak For Data
->>>>>>> 51f321e01b6ea60e1b0c2dcff140acb4d36ecbf0
-=======
-# CloudPak For Data
->>>>>>> origin/master
 
 ## 1. How is CP4D used in Maximo Application Suite
 
@@ -21,15 +6,7 @@ CP4D is the distributor of the DB2 Warehouse which is used as the datasource for
 
 ## 2. Supported Versions
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-The followong CPD4S version releases are supported:
-=======
 The following CP4D version releases are supported:
->>>>>>> 51f321e01b6ea60e1b0c2dcff140acb4d36ecbf0
-=======
-The following CP4D version releases are supported:
->>>>>>> origin/master
 
 - `3.0.1`
 
@@ -42,34 +19,13 @@ The following CP4D version releases are supported:
 
 #### 3.2.1 Master + infra Minimum Resource requirements per node
  
-<<<<<<< HEAD
-<<<<<<< HEAD
-|                         | Developer / Small | Medium / Large |
-=======
 |                         | Developer / Small | Medium         |
->>>>>>> 51f321e01b6ea60e1b0c2dcff140acb4d36ecbf0
-=======
-|                         | Developer / Small | Medium         |
->>>>>>> origin/master
 |-------------------------|-------------------|----------------|
 | **Master+infra CPU**    | `8vCPU`           | `8vCPU`        |
 | **Master+infra Memory** | `32Gi`            | `32Gi`         |
 
 #### 3.2.2 Workers/Compute Resource requirements per node
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-|                      | Developer / Small | Medium / Large   |
-|----------------------|-------------------|------------------|
-| **Worker CPU**       | `16vCPU`           | `16vCpu`        |
-| **Worker Memory**    | `64Gi`             | `128Gi`         |
-
-#### 3.2.2 Load Balancer Resource requirements per node
-
-|                      | Developer / Small | Medium / Large   |
-=======
-=======
->>>>>>> origin/master
 |                      | Developer / Small | Medium          |
 |----------------------|-------------------|-----------------|
 | **Worker CPU**       | `16vCPU`          | `16vCpu`        |
@@ -78,10 +34,6 @@ The following CP4D version releases are supported:
 #### 3.2.2 Load Balancer Resource requirements per node
 
 |                      | Developer / Small | Medium           |
-<<<<<<< HEAD
->>>>>>> 51f321e01b6ea60e1b0c2dcff140acb4d36ecbf0
-=======
->>>>>>> origin/master
 |----------------------|-------------------|------------------|
 | **Worker CPU**       | `--`              | `4vCPU`          |
 | **Worker Memory**    | `--`              | `4Gi`            |
