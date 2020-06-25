@@ -10,3 +10,5 @@
 1. [Knowledge Center](https://www.ibm.com/support/knowledgecenter/SSQR84_current/iot/kc_welcome_mas.html)
 2. [Download Document](https://www.ibm.com/support/pages/node/5694195)
 3. [System Requirements](https://www.ibm.com/support/pages/ibm-maximo-application-suite-system-requirements)
+
+**Note: This information contains sample processes and code samples. These examples have not been thoroughly tested under all conditions and the reliability, serviceability, or function of these samples is not guaranteed or implied. The samples are provided "AS IS", without warranty of any kind.**
