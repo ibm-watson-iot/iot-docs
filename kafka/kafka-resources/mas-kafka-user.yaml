@@ -12,13 +12,25 @@ spec:
       - host: '*'
         operation: All
         resource:
-          name: ''
+          name: '*'
           patternType: prefix
           type: topic
       - host: '*'
         operation: All
         resource:
-          name: ''
+          name: '*'
           patternType: prefix
+          type: group
+      - host: '*'
+        operation: All
+        resource:
+          name: '*'
+          patternType: literal
+          type: topic
+      - host: '*'
+        operation: All
+        resource:
+          name: '*'
+          patternType: literal
           type: group
     type: simple
