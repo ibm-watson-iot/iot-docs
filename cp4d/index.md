@@ -81,8 +81,8 @@ Save the file.
 - `oc login` to your OpenShift cluster
 - Go to the directory you placed the repo.yaml
 - Run the cpd adm command:
-`./cpd-linux adm -r repo.yaml -n zen --apply --verbose --accept-all-licenses`
+`./cpd-linux adm -r repo.yaml -a lite -n zen --apply --verbose --accept-all-licenses`
 
 - Run the cpd install command:
-`./cpd-linux -s repo.yaml --verbose --target-registry-username openshift --target-registry-password $(oc whoami -t) --insecure-skip-tls-verify --cluster-pull-prefix image-registry.openshift-image-registry.svc:5000/zen --transfer-image-to image-registry.openshift-image-registry.svc/zen -n zen -c <storage_class>`
+`./cpd-linux -s repo.yaml --assembly lite --verbose --target-registry-username openshift --target-registry-password $(oc whoami -t) --insecure-skip-tls-verify --cluster-pull-prefix image-registry.openshift-image-registry.svc:5000/zen --transfer-image-to image-registry.openshift-image-registry.svc/zen -n zen -c <storage_class>`
 
