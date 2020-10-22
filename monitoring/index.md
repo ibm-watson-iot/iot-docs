@@ -1,9 +1,9 @@
 # Monitoring Guide
 
 ## Contents
-1. What is provided for monitoring in Maximo Application Suite
-2. Exmaple setup of Prometheus
-3. Exmaple setup of Grafana
+1. [What is provided for monitoring in Maximo Application Suite](#1-what-is-provided-for-monitoring-in-maximo-application-suite)
+2. [Exmaple setup of Prometheus](#2-prometheus-setup)
+3. [Exmaple setup of Grafana](#3-grafana-setup)
 
 ## 1. What is provided for monitoring in Maximo Application Suite
 
