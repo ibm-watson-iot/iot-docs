@@ -41,7 +41,7 @@ Once a Grafana Operator is installed then the IoT operator will ensure that the 
 As of Maximo Application Suite 8.2.0 the following Grafana dashboards are provided:
 
 - MAS core
-  - [Suite Licensing Service](sls-details.md)
+  - [Suite Licensing Service](mas-sls-details.md)
 - IoT tool
   - [auth](iot-auth-details.md)
   - [dsc](iot-dsc-details.md)
