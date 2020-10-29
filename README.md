@@ -1,10 +1,11 @@
 # Maximo Application Suite Quick Start
 
 ## Dependencies
-1. [Cloud Pak for Data](cp4d/index.md)
-2. [Db2 Warehouse](db2w/index.md)
-3. [MongoDB](mongodb/index.md)
-4. [Apache Kafka](kafka/index.md)
+1. [Cloud Pak for Data](cp4d/README.md)
+2. [Db2 Warehouse](db2w/README.md)
+3. [MongoDB](mongodb/README.md)
+4. [Apache Kafka](kafka/README.md)
+5. [Monitoring](monitoring/README.md)
 
 ## Official documentation
 1. [Maximo Application Suite documentation](https://www.ibm.com/support/knowledgecenter/SSQR84_current/iot/kc_welcome_mas.html)

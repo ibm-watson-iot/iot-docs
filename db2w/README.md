@@ -80,7 +80,7 @@ Use the [online tool](https://www.ibm.com/links?url=http%3A%2F%2Fdashdb-configur
 ## 4. Installation
 
 ??? abstract "Prerequisite Actions"
-    - [Install CloudPak for Data](../cp4d/index.md)
+    - [Install CloudPak for Data](../cp4d/README.md)
 
 - `oc login` to your OpenShift cluster
 - Go to the directory you placed the repo.yaml
