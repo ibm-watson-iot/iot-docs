@@ -51,6 +51,7 @@ To get started follow these steps:
 - Set a MongoDB password for the user named `admin`. The password should be alphanumeric and between 15 and 20 characters in length. To do this replace [UPDATE_PASSWORD](config/mas-mongo-ce/mas_v1_mongodbcommunity_openshift_cr.yaml#L52) with the desired password. The user identified by `admin` will be created during the install process.
 - The default namespace leveraged is `mongo` to change the default namespace set the environment variable `MONGO_NAMESPACE`.
 
+Maximo Application Suite v8.4 supports only secure connections to MongoDB. As a convenience the script [generateSelfSignedCert.sh](certs/generateSelfSignedCert.sh) can be used to generate the required server certificate and key. Simply invoke [generateSelfSignedCert.sh](certs/generateSelfSignedCert.sh) from the `$IOT_DOCS_ROOT/mongodb/certs` directory.
 
 Once you have finished setting up the directory and file structure under `$IOT_DOCS_ROOT/mongodb` should look like:
 
