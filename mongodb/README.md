@@ -29,7 +29,7 @@ The following MongoDB version is supported:
 
 # Installing the Official MongoDB CE Operator
 
-**Important!!!! Maximo Application Suite (MAS) v8.4 is using an older version of the MongoDB Java Driver. The version being used does not support authentication via `SCRAM-SHA-256`. The official MongoDB CE Operator only configures `SCRAM-SHA-256` authentication. There is a [work around](#Work-Around-to-Enable-SCRAM-SHA-1-Authentication) that must be followed until MAS updates the version of the MongoDB Java driver being used. Please be sure to follow the steps for the [work around](#Work-Around-to-Enable-SCRAM-SHA-1-Authentication) after installing the MongoDB CE Operator.**
+**Important!!!! Maximo Application Suite (MAS) v8.4 does not support authentication via `SCRAM-SHA-256`. The official MongoDB CE Operator only configures `SCRAM-SHA-256` authentication. There is a [work around](#Work-Around-to-Enable-SCRAM-SHA-1-Authentication) that must be followed until MAS updates the version of the MongoDB Java driver being used. Please be sure to follow the steps for the [work around](#Work-Around-to-Enable-SCRAM-SHA-1-Authentication) after installing the MongoDB CE Operator.**
 
 This is a guide to assist with installing and configuring the Official MongoDB Community Kubernetes Operator into OpenShift. The primary objective is to setup MongoDB Community Edition (CE) so it can be used to satisfy the MongoDB prerequisite of Maximo Application Suite (MAS)
 
