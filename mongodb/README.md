@@ -39,7 +39,7 @@ At the time of this writing v0.6.0 of the MongoDB Community Kubernetes Operator 
 
 ## Getting Started
 
-Installation of the MongoDB CE operator using this repository has been tested with MongoDB 4.2.6 and OpenShift Container Platform (OCP) v4.6. By default the installation script [install-mongo-ce.sh](https://github.ibm.com/wiotp/mongo-ce-operator/blob/master/install-mongo-ce.sh) will create a three node replica set in the project namespace mongo.
+Installation of the MongoDB CE operator using this repository has been tested with MongoDB 4.2.6 and OpenShift Container Platform (OCP) v4.6. By default the installation script [install-mongo-ce.sh](install-mongo-ce.sh) will create a three node replica set in the project namespace mongo.
 
 To get started follow these steps:
 
@@ -47,15 +47,16 @@ To get started follow these steps:
 - Copy a few necessary files from the [v0.6.0 MongoDB CE Operator](https://github.com/mongodb/mongodb-kubernetes-operator/tree/v0.6.0) repository
   - Copy the contents of [config/rbac](https://github.com/mongodb/mongodb-kubernetes-operator/tree/v0.6.0/config/rbac) to `$IOT_DOCS_ROOT/mongodb/config/rbac`
 - Copy the Custom Resource Definition [mongodbcommunity.mongodb.com_mongodbcommunity.yaml](https://github.com/mongodb/mongodb-kubernetes-operator/blob/v0.6.0/config/crd/bases/mongodbcommunity.mongodb.com_mongodbcommunity.yaml) to `$IOT_DOCS_ROOT/mongodb/config/crd`
-- Copy the Deployment [manager.yaml](https://github.com/mongodb/mongodb-kubernetes-operator/blob/v0.6.0/config/manager/manager.yaml) to $IOT_DOCS_ROOT/mongodb/config/manager
-
-
-- Set a MongoDB password for the user named `admin`. The password should be alphanumeric and between 15 and 20 characters in length. To do this set the environment variable `MONGO_PASSWORD`. The user identified by `admin` will be created during the install process. However, this user should be removed after installation is complete.
+- Copy the Deployment [manager.yaml](https://github.com/mongodb/mongodb-kubernetes-operator/blob/v0.6.0/config/manager/manager.yaml) to `$IOT_DOCS_ROOT/mongodb/config/manager`
+- Set a MongoDB password for the user named `admin`. The password should be alphanumeric and between 15 and 20 characters in length. To do this replace [UPDATE_PASSWORD](config/mas-mongo-ce/mas_v1_mongodbcommunity_openshift_cr.yaml#L52) with the desired password. The user identified by `admin` will be created during the install process.
 - The default namespace leveraged is `mongo` to change the default namespace set the environment variable `MONGO_NAMESPACE`.
-- Ensure that you have the appropriate version of the executable `oc` and have logged in with appropriate authorization.
-- Invoke the script [install-mongo-ce.sh](https://github.ibm.com/wiotp/mongo-ce-operator/blob/master/install-mongo-ce.sh).
+- From the directory `$IOT_DOCS_ROOT/mongodb` invoke the script [install-mongo-ce.sh](https://github.ibm.com/wiotp/mongo-ce-operator/blob/master/install-mongo-ce.sh).
+
 
 ```bash
+
+export MONGO_NAMESPACE=mongo
+
 oc login .....
 
 ./install-mongo-ce.sh
@@ -252,7 +253,7 @@ NAME               TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)     AGE
 mas-mongo-ce-svc   ClusterIP   None         <none>        27017/TCP   82m
 ```
 
-Security is enabled for the replica set. The certificate authority (CA) and self-signed certificate from [certs](https://github.ibm.com/wiotp/mongo-ce-operator/tree/master/certs) is used to enable security. The [CA](https://github.ibm.com/wiotp/mongo-ce-operator/blob/master/certs/ca.pem) is placed in a ConfigMap named `mas-mongo-ce-cert-map` and the [server key](https://github.ibm.com/wiotp/mongo-ce-operator/blob/master/certs/server.key) and [certificate](https://github.ibm.com/wiotp/mongo-ce-operator/blob/master/certs/server.crt) are stored in a tls secret named `mas-mongo-ce-cert-secret`.
+Security is enabled for the replica set. The certificate authority (CA) and self-signed certificate from [certs](certs) is used to enable security. The [CA](certs/ca.pem) is placed in a ConfigMap named `mas-mongo-ce-cert-map` and the [server key](certs/server.key) and [certificate](certs/server.crt) are stored in a tls secret named `mas-mongo-ce-cert-secret`.
 
 To view the MongoDB configuration file you can enter one of the replica set containers and view the contents of the file `/data/automation-mongod.conf`
 
@@ -330,4 +331,4 @@ The password can be the one used during the installation. However, it is recomme
 
 Ensure that you have the executable `oc` and have logged in with appropriate authorization. 
 
-Invoke the [uninstall.sh](https://github.ibm.com/wiotp/mongo-ce-operator/blob/master/uninstall.sh) script
+Invoke the [uninstall.sh](uninstall.sh) script
