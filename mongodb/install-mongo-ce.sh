@@ -58,7 +58,7 @@ function waitForTheStatefulSet {
 }
 
 
-oc new-project mongo
+oc new-project ${MONGO_NAMESPACE}
 
 oc apply -f config/crd/mongodbcommunity.mongodb.com_mongodbcommunity.yaml -n ${MONGO_NAMESPACE} 
 
