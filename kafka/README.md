@@ -28,10 +28,14 @@ Kafka forms an important part of the internal communications for services in the
 
 ## 2. Supported Versions
 
-The followong Kafka server version releases are supported:
+Maximo Application Suite is compatible with **any stable 2.x** version of Apache Kafka. This includes [IBM Event Streams](https://www.ibm.com/cloud/event-streams) or [Strimzi](https://strimzi.io/).
 
-- `2.3.X`
-- `2.4.X`
+### 2.1 Specific Versions Tested
+
+The following versions have been tested with Maximo Application Suite. 
+
+- 2.3.x Running in IBM Event Streams
+- 2.6.x Running in Strimzi
 
 ## 3. Supported Deployment Details
 
