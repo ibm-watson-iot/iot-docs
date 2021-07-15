@@ -89,6 +89,10 @@ The simplest method for intallation is via the Operator Hub in the RedHat OpenSh
 
 If you wish to manually install the operator, please refer to the Strimzi documentation [here](https://strimzi.io/docs/operators/master/using.html)
 
+**Important: To follow this guide, you must install from a channel that still supports the kafka.strimzi.io/v1beta1 API.**  
+
+We recommend you to use strimzi-0.22.x as this is the most recent release that supports the API used by this guide.  IBM Maximo Application Suite can support Kafka clusters deployed using the kafka.strimzi.io/v1 API, but this guide is written using the older API spec.
+
 ### 5.2 Defining a Storage Class
 
 Before you can create the Kafka cluster you need to first define a Storage Class that will be used for Persistant Volume Claims.  The specific configuration of this Storage Class will be determined by the available Storage Providers in your OpenShift Cluster environment, however in order to be compatible with the subsequent example resources the Storage Class that you define should have the following name: `kafka-block-storage`
