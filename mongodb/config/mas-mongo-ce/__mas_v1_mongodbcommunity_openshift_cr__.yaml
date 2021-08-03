@@ -6,7 +6,7 @@ metadata:
 spec:
   members: 3
   type: ReplicaSet
-  version: "4.2.6"
+  version: "{{MAS_MONGO_VERSION}}"
   security:
     tls:
       enabled: true
@@ -45,8 +45,8 @@ spec:
           - name: mongod
             resources:
               limits:
-                cpu: "1"
-                memory: "1G"
+                cpu: "{{MAS_MONGOD_CPU}}"
+                memory: "{{MAS_MONGOD_MEM_GB}}"
       volumeClaimTemplates:
         - metadata:
             name: data-volume
@@ -55,7 +55,7 @@ spec:
             storageClassName: "{{MONGODB_STORAGE_CLASS}}"
             resources:
               requests:
-                storage: "20Gi"
+                storage: "{{MAS_MONGOD_STORAGE_GB}}"
         - metadata:
             name: logs-volume
           spec:
@@ -63,7 +63,7 @@ spec:
             storageClassName: "{{MONGODB_STORAGE_CLASS}}"
             resources:
               requests:
-                storage: "2Gi"
+                storage: "{{MAS_MONGOD_STORAGE_LOGS_GB}}"
 
 # the user credentials will be generated from this secret
 # once the credentials are generated, this secret is no longer required
@@ -74,4 +74,4 @@ metadata:
   name: mas-mongo-ce-admin-password
 type: Opaque
 stringData:
-  password: Rp5pmIyd9cwVNaf
+  password: {{MAS_MONGO_PASSWORD}}

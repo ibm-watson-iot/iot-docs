@@ -57,14 +57,16 @@ if [[ ${#MONGO_PASSWORD} -gt 20  || ${#MONGO_PASSWORD} -lt 15 ]]; then
   exit 1
 fi
 
-sed -i.bak "s|\"{{MAS_MONGO_VERSION}}\"|\"${MONGO_VERSION}\"|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
-sed -i.bak "s|{{MAS_MONGO_PASSWORD}}|${MONGO_PASSWORD}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
-sed -i.bak "s|{{MAS_MONGOD_CPU}}|${MONGOD_CPU}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
-sed -i.bak "s|{{MAS_MONGOD_MEM_GB}}|${MONGOD_MEM_GB}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
-sed -i.bak "s|{{MAS_MONGOD_STORAGE_GB}}|${MONGOD_STORAGE_GB}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
-sed -i.bak "s|{{MAS_MONGOD_STORAGE_LOGS_GB}}|${MONGOD_STORAGE_LOGS_GB}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
-sed "s|{{MONGODB_STORAGE_CLASS}}|${MONGODB_STORAGE_CLASS}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml > config/mas-mongo-ce/mas_v1_mongodbcommunity_openshift_cr.yaml
-rm config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.bak
+cp config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
+sed -i.bak "s|\"{{MAS_MONGO_VERSION}}\"|\"${MONGO_VERSION}\"|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
+sed -i.bak "s|{{MAS_MONGO_PASSWORD}}|${MONGO_PASSWORD}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
+sed -i.bak "s|{{MAS_MONGOD_CPU}}|${MONGOD_CPU}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
+sed -i.bak "s|{{MAS_MONGOD_MEM_GB}}|${MONGOD_MEM_GB}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
+sed -i.bak "s|{{MAS_MONGOD_STORAGE_GB}}|${MONGOD_STORAGE_GB}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
+sed -i.bak "s|{{MAS_MONGOD_STORAGE_LOGS_GB}}|${MONGOD_STORAGE_LOGS_GB}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
+sed "s|{{MONGODB_STORAGE_CLASS}}|${MONGODB_STORAGE_CLASS}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working > config/mas-mongo-ce/mas_v1_mongodbcommunity_openshift_cr.yaml
+rm config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
+rm config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working.bak
 sed "s|{{MONGO_NAMESPACE}}|${MONGO_NAMESPACE}|g" config/manager/__manager__.yaml > config/manager/manager.yaml
 
 
