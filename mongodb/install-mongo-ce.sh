@@ -17,6 +17,56 @@ if [ -z "$MONGO_NAMESPACE" ]; then
   MONGO_NAMESPACE="mongo"
 fi
 
+if [ -z "$MONGO_VERSION" ]; then
+  MONGO_VERSION="4.2.6"
+fi
+
+if [ -z "$MONGOD_CPU" ]; then
+  MONGOD_CPU="1"
+fi
+
+if [ -z "$MONGOD_MEM_GB" ]; then
+  MONGOD_MEM_GB="1G"
+fi
+
+if [ -z "$MONGOD_STORAGE_GB" ]; then
+  MONGOD_STORAGE_GB="20Gi"
+fi
+
+if [ -z "$MONGOD_STORAGE_LOGS_GB" ]; then
+  MONGOD_STORAGE_LOGS_GB="2Gi"
+fi
+
+if [ -z "$MONGODB_STORAGE_CLASS" ]; then
+  echo "Please specify a valid storage class."
+  exit 1
+  #MONGODB_STORAGE_CLASS="ocs-storagecluster-ceph-rbd"
+fi
+
+if [ -z "$MONGO_PASSWORD" ]; then
+  echo "Please set a 15 to 20 character alphanumeric MonogDB password."
+  exit 1
+fi
+
+if [[ "$MONGO_PASSWORD" =~ [^a-zA-Z0-9] ]]; then
+  echo "Please ensure the MongoDB admin password is alphanumeric"
+  exit 1
+fi
+if [[ ${#MONGO_PASSWORD} -gt 20  || ${#MONGO_PASSWORD} -lt 15 ]]; then
+  echo "Please ensure that the MongoDB admin password is between 15 and 20 characters"
+  exit 1
+fi
+
+sed -i.bak "s|\"{{MAS_MONGO_VERSION}}\"|\"${MONGO_VERSION}\"|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
+sed -i.bak "s|{{MAS_MONGO_PASSWORD}}|${MONGO_PASSWORD}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
+sed -i.bak "s|{{MAS_MONGOD_CPU}}|${MONGOD_CPU}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
+sed -i.bak "s|{{MAS_MONGOD_MEM_GB}}|${MONGOD_MEM_GB}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
+sed -i.bak "s|{{MAS_MONGOD_STORAGE_GB}}|${MONGOD_STORAGE_GB}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
+sed -i.bak "s|{{MAS_MONGOD_STORAGE_LOGS_GB}}|${MONGOD_STORAGE_LOGS_GB}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml
+sed "s|{{MONGODB_STORAGE_CLASS}}|${MONGODB_STORAGE_CLASS}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml > config/mas-mongo-ce/mas_v1_mongodbcommunity_openshift_cr.yaml
+rm config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.bak
+sed "s|{{MONGO_NAMESPACE}}|${MONGO_NAMESPACE}|g" config/manager/__manager__.yaml > config/manager/manager.yaml
+
 
 command -v oc >/dev/null 2>&1 || { echo >&2 "Required executable \"oc\" not found on PATH.  Aborting."; exit 1; }
 
@@ -78,7 +128,5 @@ cd ..
 oc apply -f config/mas-mongo-ce/mas_v1_mongodbcommunity_openshift_cr.yaml -n ${MONGO_NAMESPACE} 
 sleep 5s
 waitForTheStatefulSet
-
-oc rollout restart statefulset mas-mongo-ce -n ${MONGO_NAMESPACE}
 
 
