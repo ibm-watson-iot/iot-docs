@@ -29,13 +29,12 @@ The following MongoDB version is supported:
 
 # Installing the Official MongoDB CE Operator
 
-**Important!!!! Maximo Application Suite (MAS) v8.4 does not support authentication via `SCRAM-SHA-256`. The official MongoDB CE Operator only configures `SCRAM-SHA-256` authentication. There is a [work around](#Work-Around-to-Enable-SCRAM-SHA-1-Authentication) that must be followed until MAS updates the version of the MongoDB Java driver being used. Please be sure to follow the steps for the [work around](#Work-Around-to-Enable-SCRAM-SHA-1-Authentication) after installing the MongoDB CE Operator.**
 
 This is a guide to assist with installing and configuring the Official MongoDB Community Kubernetes Operator into OpenShift. The primary objective is to setup MongoDB Community Edition (CE) so it can be used to satisfy the MongoDB prerequisite of Maximo Application Suite (MAS)
 
 The installation and configuration was adapted from the official [MongoDB Community Kubernetes Operator](https://github.com/mongodb/mongodb-kubernetes-operator). You are encouraged to review the applicable documentation provided with the official [MongoDB Community Kubernetes Operator](https://github.com/mongodb/mongodb-kubernetes-operator) 
 
-At the time of this writing v0.6.0 of the MongoDB Community Kubernetes Operator is the latest release.
+At the time of this writing v0.7.0 of the MongoDB Community Kubernetes Operator is the latest release.
 
 ## Getting Started
 
@@ -44,19 +43,17 @@ Installation of the MongoDB CE operator using this repository has been tested wi
 To get started follow these steps:
 
 - Clone the repository https://github.com/ibm-watson-iot/iot-docs The location to where you have cloned this repository will be referred to as $IOT_DOCS_ROOT. 
-- Copy a few necessary files from the [v0.6.0 MongoDB CE Operator](https://github.com/mongodb/mongodb-kubernetes-operator/tree/v0.6.0) repository
-  - Copy the contents of [config/rbac](https://github.com/mongodb/mongodb-kubernetes-operator/tree/v0.6.0/config/rbac) to `$IOT_DOCS_ROOT/mongodb/config/rbac`
-- Copy the Custom Resource Definition [mongodbcommunity.mongodb.com_mongodbcommunity.yaml](https://github.com/mongodb/mongodb-kubernetes-operator/blob/v0.6.0/config/crd/bases/mongodbcommunity.mongodb.com_mongodbcommunity.yaml) to `$IOT_DOCS_ROOT/mongodb/config/crd`
-- Copy the Deployment [manager.yaml](https://github.com/mongodb/mongodb-kubernetes-operator/blob/v0.6.0/config/manager/manager.yaml) to `$IOT_DOCS_ROOT/mongodb/config/manager`
-- Set a MongoDB password for the user named `admin`. The password should be alphanumeric and between 15 and 20 characters in length. To do this replace [UPDATE_PASSWORD](config/mas-mongo-ce/mas_v1_mongodbcommunity_openshift_cr.yaml#L52) with the desired password. The user identified by `admin` will be created during the install process.
+- Set a MongoDB password for the user named `admin`. The password should be alphanumeric and between 15 and 20 characters in length. To do this set the environment variable `MONGO_PASSWORD`. The user identified by `admin` will be created during the install process. However, this user should be removed after installation is complete.
 - The default namespace leveraged is `mongo` to change the default namespace set the environment variable `MONGO_NAMESPACE`.
+- Specify the storage class that should be used for persistent volume claims. To do this set the environment variable `MONGODB_STORAGE_CLASS`
 
-Maximo Application Suite v8.4 supports only secure connections to MongoDB. As a convenience the script [generateSelfSignedCert.sh](certs/generateSelfSignedCert.sh) can be used to generate the required server certificate and key. Simply invoke [generateSelfSignedCert.sh](certs/generateSelfSignedCert.sh) from the `$IOT_DOCS_ROOT/mongodb/certs` directory.
+Maximo Application Suite supports only secure connections to MongoDB. As a convenience the script [generateSelfSignedCert.sh](certs/generateSelfSignedCert.sh) can be used to generate the required server certificate and key. Simply invoke [generateSelfSignedCert.sh](certs/generateSelfSignedCert.sh) from the `$IOT_DOCS_ROOT/mongodb/certs` directory. If you are planning on using a namespace other than `mongo` be sure to override the `MONGO_NAMESPCE` variable before invoking the script [generateSelfSignedCert.sh](certs/generateSelfSignedCert.sh). This will ensure that the certificate created contains the correct hostname configuration.
 
 Once you have finished setting up the directory and file structure under `$IOT_DOCS_ROOT/mongodb` should look like:
 
 ```bash
 |-- certs
+|   |-- __openssl.cnf__
 |   |-- ca.key
 |   |-- ca.pem
 |   |-- ca.srl
@@ -72,9 +69,9 @@ Once you have finished setting up the directory and file structure under `$IOT_D
 |   `-- server.key
 |-- config
 |   |-- crd
-|   |   `-- mongodbcommunity.mongodb.com_mongodbcommunity.yaml
+|   |   `-- __mongodbcommunity.mongodb.com_mongodbcommunity__.yaml
 |   |-- manager
-|   |   `-- manager.yaml
+|   |   `-- __manager__.yaml
 |   |-- mas-mongo-ce
 |   |   `-- mas_v1_mongodbcommunity_openshift_cr.yaml
 |   `-- rbac
@@ -92,6 +89,8 @@ To start the installation of the MongoDB CE Operator invoke the `install-mongo-c
 ```bash
 
 export MONGO_NAMESPACE=mongo
+export MONGODB_STORAGE_CLASS="store-class-to-use"
+export MONGO_PASSWORD="a-good-password"
 
 oc login .....
 
@@ -119,7 +118,7 @@ and see an error like this under Events:
 ```
 FailedBinding 85s (x26 over 7m39s) persistentvolume-controller no persistent volumes available for this claim and no storage class is set
 ```
-then your cluster probably does not have a default storageclass configured.  To fix that, check for storageclasses:
+then you probably did not specify the correct storage class.  To fix that, check for storage classes:
 ```
 oc get storageclass
 NAME                          PROVISIONER                             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
@@ -129,25 +128,8 @@ ocs-storagecluster-ceph-rgw   openshift-storage.ceph.rook.io/bucket   Delete    
 ocs-storagecluster-cephfs     openshift-storage.cephfs.csi.ceph.com   Delete          Immediate              true                   3d1h
 openshift-storage.noobaa.io   openshift-storage.noobaa.io/obc         Delete          Immediate              false                  3d1h
 ```
-When the a default storageclass is set, you will see this:
-```
-oc get storageclass                                                                                                                          
-NAME                                    PROVISIONER                             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
-localblock                              kubernetes.io/no-provisioner            Delete          WaitForFirstConsumer   false                  3d1h
-ocs-storagecluster-ceph-rbd (default)   openshift-storage.rbd.csi.ceph.com      Delete          Immediate              true                   3d1h
-ocs-storagecluster-ceph-rgw             openshift-storage.ceph.rook.io/bucket   Delete          Immediate              false                  3d1h
-ocs-storagecluster-cephfs               openshift-storage.cephfs.csi.ceph.com   Delete          Immediate              true                   3d1h
-openshift-storage.noobaa.io             openshift-storage.noobaa.io/obc         Delete          Immediate              false                  3d1h
-```
-To set a default storageclass, do:
-```
-oc patch storageclass <storage_class> -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
-```
-For example:
-```
-oc patch storageclass ocs-storagecluster-ceph-rbd -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
-```
-and uninstall the mongo-ce-operator, and reinstall.
+
+Make note of the storage class that you should use and uninstall the mongo-ce-operator, and reinstall. Be sure to update `MONGODB_STORAGE_CLASS` with the correct storage class.
 
 ### Validate Installation
 
@@ -189,71 +171,6 @@ items:
 
     ...
 ```
-
-## Work Around to Enable SCRAM-SHA-1 Authentication
-
-After the MongoDB CE Operator has deployed and completely restarted scale the operator to zero replicas. This is required because any configuration change made will be undone by the operator. 
-
-```bash
-oc edit deployment mongodb-kubernetes-operator
-```
-
-Edit the operators deployment and set `replicas` to 0 (zero):
-
-```yaml 
-# Please edit the object below. Lines beginning with a '#' will be ignored,
-# and an empty file will abort the edit. If an error occurs while saving this file will be
-# reopened with the relevant failures.
-#
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  annotations:
-    deployment.kubernetes.io/revision: "1"
-  creationTimestamp: "2021-05-04T18:47:19Z"
-  generation: 1
-  name: mongodb-kubernetes-operator
-  namespace: mongo
-  resourceVersion: "631709603"
-  selfLink: /apis/apps/v1/namespaces/mongo/deployments/mongodb-kubernetes-operator
-  uid: f801867e-c664-4b63-81dd-418d89a6ab93
-spec:
-  progressDeadlineSeconds: 600
-  replicas: 0
-  revisionHistoryLimit: 10
-  selector:
-    matchLabels:
-      name: mongodb-kubernetes-operator
-
-...
-
-```
-
-Then save the deployment and the MongoDB CE Operator should terminate. Once you have scaled the Mongo CE Operator to have no replicas you must edit the secret `mas-mongo-ce-config`. To do this issue the following command:
-
-```bash
-oc edit secret mas-mongo-ce-config 
-```
-
-The data for the secret is Base64 encoded in the property `cluster-config.json`. Decode the data and update the following two arrays in the `auth` section:
-
-```json
-"auth": {
-
-  "autoAuthMechanisms": ["SCRAM-SHA-256", "SCRAM-SHA-1"],
-  "autoAuthMechanism": "SCRAM-SHA-256",
-  "deploymentAuthMechanisms": ["SCRAM-SHA-256", "SCRAM-SHA-1"],
-
-  }
-```
-
-Make sure the arrays `autoAuthMechanisms` and `deploymentAuthMechanisms` contain `SCRAM-SHA-1`. Once you update the JSON you will need to Base64 encode it and set the property `cluster-config.json` to the new encoded value. Then save the secret and do a rolling restart of the stateful set. 
-
-```bash
-oc rollout restart statefulset mas-mongo-ce -n ${MONGO_NAMESPACE}
-```
-
-See the Configuration Details section of this document on how to validate or view the MongoDB configuration yaml file for each member of the replica set. Make sure that `authenticationMechanisms` is set to `SCRAM-SHA-256,SCRAM-SHA-1`
 
 ## Using MongoDB
 ### Configuration Details
