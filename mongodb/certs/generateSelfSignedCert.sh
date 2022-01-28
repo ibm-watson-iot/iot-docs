@@ -8,7 +8,7 @@ sed "s|{{MONGO_NAMESPACE}}|${MONGO_NAMESPACE}|g" __openssl__.cnf > openssl.cnf
 
 
 # Generate self signed root CA cert
-openssl req -config openssl.cnf -days 3650 -nodes -x509 -newkey rsa:2048 -subj "/C=US/ST=NY/L=New York/O=Example, LLC/CN=Mongo CA" -extensions v3_ca -keyout ca.key -out ca.pem
+openssl req -config ca.cnf -days 3650 -nodes -x509 -newkey rsa:2048 -subj "/C=US/ST=NY/L=New York/O=Example, LLC/CN=Mongo CA" -extensions v3_ca -keyout ca.key -out ca.pem
 
 # Generate server cert to be signed
 openssl req -config openssl.cnf -nodes -newkey rsa:2048 -keyout server.key -out server.csr 
