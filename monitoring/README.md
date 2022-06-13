@@ -51,7 +51,7 @@ As of Maximo Application Suite 8.2.0 the following Grafana dashboards are provid
   
 ## 2. Prometheus Setup
 
-### OpenShift TechPreview 
+### OpenShift 4.3 TechPreview 
 
 OpenShift provides a Prometheus that is used to monitor the internals of OpenShift only. To install Prometheus to monitor workloads such as Maximo Application Suite and any other applications in the OpneShift cluster you can configure the OpenShift tech preview to monitor these services as described in https://docs.openshift.com/container-platform/4.3/monitoring/monitoring-your-own-services.html#enabling-monitoring-of-your-own-services_monitoring-your-own-services
 
@@ -62,151 +62,26 @@ In summary of the above link you would:
 
 Customization of the user workload monitoring stack can be achieved by following https://docs.openshift.com/container-platform/4.3/monitoring/cluster_monitoring/configuring-the-monitoring-stack.html#configuring-the-cluster-monitoring-stack_configuring-monitoring but setting the relevant configmaps in the `openshift-user-workload-monitoring` project rather than `openshift-monitoring`
 
+### Openshift 4.6 and onwards
+
+Openshift promoted the tech preview to a full feature but the configuration is similar to how it was. Full details are here https://docs.openshift.com/container-platform/4.6/monitoring/enabling-monitoring-for-user-defined-projects.html.
+
+Alternatively you can use the ansible mas_devops collection to configure the cluster monitoring. Details on this role are found here https://ibm-mas.github.io/ansible-devops/roles/cluster_monitoring/ and general details on this collection are here https://ibm-mas.github.io/ansible-devops/.
+
 ### IBM Common Services
 
-As of version 1.9.0 of the IBM Common Services monitoring service (https://www.ibm.com/support/knowledgecenter/SSHKN6/monitoring/landing_monitoring.html) the Prometheus instance is provided by the Red Hat OpenShift tech preview mentioned above.
+As of version 1.9.0 of the IBM Common Services monitoring service (https://www.ibm.com/support/knowledgecenter/SSHKN6/monitoring/landing_monitoring.html) the Prometheus instance is provided by the Red Hat OpenShift user workload prometheus mentioned above.
 
 If you have an existing IBM Common Services monitoring service then this will work as long as it is able to watch for ServiceMonitor resources in the IoT namespace.
 
 ## 3. Grafana Setup
 
-### Red Hat Grafana Operator
+### Red Hat Grafana Operator v4.4.x
 
-The following provides details on how to install and cofigure the [Grafana Operator](https://operatorhub.io/operator/grafana-operator) Red Hat via the OperatorHub into the `openshift-user-workload-monitoring` project.
+It is recommended to to install andd configure the [Grafana Operator](https://operatorhub.io/operator/grafana-operator) v4 using the ansible mas_devops collection and the cluster_monitoring role. Details on this role are found here https://ibm-mas.github.io/ansible-devops/roles/cluster_monitoring/ and general details on this collection are here https://ibm-mas.github.io/ansible-devops/.
 
-From the OpenShift UI navigate to the Operators->OperatorHub and search for the "Grafana Operator" provided by Red Hat. Install the operator into the `openshift-user-workload-monitoring` namepsace.
+The role will install the grafana operator and make sure it can scan all namespaces for the MAS provided dashboards. 
 
-Once the operator is installed update the grafana operators yaml file, via the yaml tab after clicking on the operator, to add the following:
-
-```
-args: 
-    ['--scan-all']
-```
-
-The above property is set under:
-```
-install:
-    spec:
-        deployments:
-            spec:
-                template:
-                    spec:
-                        containers:
-```
-
-The yaml file show now look like this:
-```
-  install:
-    spec:
-      deployments:
-        - name: grafana-operator
-          spec:
-            replicas: 1
-            selector:
-              matchLabels:
-                name: grafana-operator
-            strategy: {}
-            template:
-              metadata:
-                creationTimestamp: null
-                labels:
-                  name: grafana-operator
-              spec:
-                containers:
-                  - args:
-                      - '--scan-all'
-                    command:
-                      - grafana-operator
-                    ....
-```
-
-The above ensures that all projects are scanned for GrafanaDashboard resources. To ensure that the correct permission is set to scan these projects then you can run the following ansible playbook, located in the https://github.com/integr8ly/grafana-operator/tree/master/deploy/ansible repo, to setup the cluster role:
-
-```
-ansible-playbook grafana-operator-cluster-dashboards-scan.yaml -e k8s_host=https://api.yourcluster.com:6443 -e k8s_api_key=xxxxx -e k8s_validate_certs=false -e grafana_operator_namespace=openshift-user-workload-monitoring
-```
-
-The k8s_api_key is the login token used when you do an oc login. Alternatively you can use `k8s_password` and `k8s_username`.
-
-#### Grafana Instance
-
-Next step is to create the Grafana instance. Within the Grafana Operator UI in Installed Operators section of the OpenShift UI select the `Grafana` tab and click `Create Grafana`. Enter the following yaml:
-
-```
-apiVersion: integreatly.org/v1alpha1
-kind: Grafana
-metadata:
-  name: mas-grafana
-spec:
-  ingress:
-    enabled: true
-  dataStorage:
-    accessModes:
-    - ReadWriteOnce
-    size: 10Gi
-    class: rook-ceph-block-internal
-  config:
-    log:
-      mode: "console"
-      level: "warn"
-    security:
-      admin_user: "root"
-      admin_password: "secret"
-    auth:
-      disable_login_form: False
-      disable_signout_menu: True
-    auth.anonymous:
-      enabled: True
-  dashboardLabelSelector:
-    - matchExpressions:
-        - {key: app, operator: In, values: [grafana]}
-```
-The above will create will create a PVC using the `rook-ceph-block-internal` storage class and set a admin username of `root` and password of `secret`. These values should be changed to more secure values.
-
-A route is also created and the public url can be located in that route definition in the `openshift-user-workload-monitoring` namespace/project.
-
-Further customizations can be found in https://github.com/integr8ly/grafana-operator/blob/v3.5.0/documentation/deploy_grafana.md and also manual scripts to set the cluster role if ansible is not preferred.
-
-#### Grafana Datasource
-
-Next step is to create the GrafanaDatasource that will point to the prometheus instance installed eariler. Similar to the Grafana Instance choose the `Grafana Datasource` from the operator UI, and set the following yaml:
-
-```
-apiVersion: integreatly.org/v1alpha1
-kind: GrafanaDataSource
-metadata:
-  name: mas-prom-grafanadatasource
-  namespace: openshift-user-workload-monitoring
-spec:
-  datasources:
-    - access: proxy
-      editable: true
-      isDefault: true
-      jsonData:
-        httpHeaderName1: Authorization
-        timeInterval: 5s
-        tlsSkipVerify: true
-      name: prometheus
-      secureJsonData:
-        httpHeaderValue1: >-
-          Bearer
-          <TOKEN HERE>
-      type: prometheus
-      url: >-
-        https://prometheus-operated.openshift-user-workload-monitoring.svc.cluster.local:9091/
-      version: 1
-  name: mas-datasources.yaml
-```
-
-The bearer token to be set where TOKEN HERE is set, can be retrieved by running:
-
-```
-oc -n openshift-user-workload-monitoring serviceaccounts get-token prometheus-user-workload
-```
-
-Further details on a Grafana Datasource can be seen here: https://github.com/integr8ly/grafana-operator/blob/v3.5.0/documentation/datasources.md
-
-Note: the datasource name that is set above is `prometheus` and the provided GrafanaDashboards from Maximo Application Suite IoT tool are expecting this to be the datasource name.
 
 ### IBM Common Services
 
