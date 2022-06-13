@@ -78,7 +78,7 @@ If you have an existing IBM Common Services monitoring service then this will wo
 
 ### Red Hat Grafana Operator v4.4.x
 
-It is recommended to to install andd configure the [Grafana Operator](https://operatorhub.io/operator/grafana-operator) v4 using the ansible mas_devops collection and the cluster_monitoring role. Details on this role are found here https://ibm-mas.github.io/ansible-devops/roles/cluster_monitoring/ and general details on this collection are here https://ibm-mas.github.io/ansible-devops/.
+It is recommended to to install and configure the [Grafana Operator](https://operatorhub.io/operator/grafana-operator) v4 using the ansible mas_devops collection and the cluster_monitoring role. Details on this role are found here https://ibm-mas.github.io/ansible-devops/roles/cluster_monitoring/ and general details on this collection are here https://ibm-mas.github.io/ansible-devops/.
 
 The role will install the grafana operator and make sure it can scan all namespaces for the MAS provided dashboards. 
 
