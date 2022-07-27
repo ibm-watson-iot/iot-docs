@@ -13,9 +13,9 @@ RED="\033[31m"
 GREEN="\033[32m"
 OFF="\033[0m"
 
-# if [ -z "$MONGO_NAMESPACE" ]; then
-#   MONGO_NAMESPACE="mongo"
-# fi
+if [ -z "$MONGO_NAMESPACE" ]; then
+  MONGO_NAMESPACE="mongo"
+fi
 
 if [ -z "$MONGO_VERSION" ]; then
   MONGO_VERSION="4.2.6"
@@ -58,7 +58,7 @@ if [[ ${#MONGO_PASSWORD} -gt 20  || ${#MONGO_PASSWORD} -lt 15 ]]; then
 fi
 
 cp config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
-# sed -i.bak "s|\"{{MAS_MONGO_VERSION}}\"|\"${MONGO_VERSION}\"|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
+sed -i.bak "s|\"{{MAS_MONGO_VERSION}}\"|\"${MONGO_VERSION}\"|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
 sed -i.bak "s|{{MAS_MONGO_PASSWORD}}|${MONGO_PASSWORD}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
 sed -i.bak "s|{{MAS_MONGOD_CPU}}|${MONGOD_CPU}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working
 sed -i.bak "s|{{MAS_MONGOD_MEM_GB}}|${MONGOD_MEM_GB}|g" config/mas-mongo-ce/__mas_v1_mongodbcommunity_openshift_cr__.yaml.working

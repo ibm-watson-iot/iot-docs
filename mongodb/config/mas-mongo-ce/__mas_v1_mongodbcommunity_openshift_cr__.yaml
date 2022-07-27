@@ -6,6 +6,7 @@ metadata:
 spec:
   members: 3
   type: ReplicaSet
+  version: "{{MAS_MONGO_VERSION}}"
   security:
     tls:
       enabled: true
