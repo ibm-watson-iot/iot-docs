@@ -36,7 +36,7 @@ As of Maximo Application Suite 8.2.0 the following MAS core metric endpoints are
 
 ### Grafana Dashboards
 
-Once a Grafana Operator is installed then the IoT operator will ensure that the resources that represent the Grafana Dashboards are installed. If the Red Hat Grafana Operator is used then the resources will belong to the api group `integreatly.org/v1alpha1` and of kind `GrafanaDashboard`. If the IBM Common Services Monitoring service is used then the resource provided by IoT tool belong to the api group `monitoringcontroller.cloud.ibm.com/v1` and of kind `MonitoringDashboard`. Both kinds are automatically picked up by the Grafana Operator and installed into the Grafana Instance into a folder based on the namespace/project name.
+Once a Grafana Operator is installed then the IoT operator will ensure that the resources that represent the Grafana Dashboards are installed. If the Red Hat Grafana Operator v5 is used then the resources will belong to the api group `grafana.integreatly.org/v1beta1` and of kind `GrafanaDashboard`. If the Red Hat Grafana Operator v4 is used then the resources will belong to the api group `integreatly.org/v1alpha1` and of kind `GrafanaDashboard`. If the IBM Common Services Monitoring service is used then the resource provided by IoT tool belong to the api group `monitoringcontroller.cloud.ibm.com/v1` and of kind `MonitoringDashboard`. All three kinds are automatically picked up by the Grafana Operator and installed into the Grafana Instance into a folder based on the namespace/project name.
 
 As of Maximo Application Suite 8.2.0 the following Grafana dashboards are provided:
 
